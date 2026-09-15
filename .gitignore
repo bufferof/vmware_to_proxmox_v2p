@@ -1,3 +1,4 @@
 .vs/
 .qtcreator/
 cmake/
+out/build/
