@@ -1,0 +1,233 @@
+
+
+/*
+This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
+It is supposed to be strictly declarative and only uses a subset of QML. If you edit
+this file manually, you might introduce QML code that is not supported by Qt Design Studio.
+Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on .ui.qml files.
+*/
+import QtQuick
+import QtQuick.Controls
+import V2p_gui
+import QtQuick.Studio.DesignEffects
+import QtQuick.Studio.Components 1.0
+
+Rectangle {
+    width: 520
+    height: 560
+    color: "#18191d"
+
+    Column {
+        x: 68
+        y: 68
+        anchors.fill: parent
+        anchors.margins: 28
+        spacing: 20
+
+        Text {
+            text: "VMware to Proxmox"
+            color: "white"
+            font.pixelSize: 21
+            font.bold: true
+        }
+
+        Text {
+            text: "Simple Migratoin Tool"
+            color: "#9297a3"
+            font.pixelSize: 13
+        }
+
+        // Source
+        Column {
+            width: parent.width
+            spacing: 7
+
+            Text {
+                text: "Source"
+                color: "#dfe2e8"
+                font.pixelSize: 13
+                font.bold: true
+            }
+
+            Row {
+                width: parent.width
+                height: 42
+                spacing: 8
+
+                TextField {
+                    width: parent.width - 82
+                    height: 42
+
+                    text: "Select Your VM Folder"
+                    font.pointSize: 10
+                    font.family: "Arial"
+
+                    color: "#ffffff"
+                    placeholderTextColor: "#666b76"
+
+                    background: Rectangle {
+                        radius: 8
+                        color: "#191b20"
+                        border.color: "#343740"
+                        border.width: 1
+                    }
+
+                    leftPadding: 12
+                    rightPadding: 12
+                }
+
+                Button {
+                    width: 74
+                    height: 42
+                    text: "Browse"
+
+                    background: Rectangle {
+                        radius: 8
+                        color: parent.down
+                               ? "#30343d"
+                               : "#292c34"
+                        border.color: "#3b3f49"
+                    }
+
+                    contentItem: Text {
+                        text: parent.text
+                        color: "#ffffff"
+                        font.pixelSize: 12
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+            }
+        }
+
+        // Destination
+        Column {
+            width: parent.width
+            spacing: 7
+
+            Text {
+                text: "Destination"
+                color: "#dfe2e8"
+                font.pixelSize: 13
+                font.bold: true
+            }
+
+            TextField {
+                width: parent.width
+                height: 42
+
+                text: "Proxmox Host (e.g. pve01.example.com)"
+                font.pointSize: 10
+                font.family: "Arial"
+
+                color: "#ffffff"
+                placeholderTextColor: "#666b76"
+
+                background: Rectangle {
+                    radius: 8
+                    color: "#191b20"
+                    border.color: "#343740"
+                    border.width: 1
+                }
+
+                leftPadding: 12
+                rightPadding: 12
+            }
+        }
+
+        // VM Information
+        Rectangle {
+            width: parent.width
+            height: 90
+            radius: 10
+            color: "#1c1e23"
+
+            Column {
+                anchors.fill: parent
+                anchors.margins: 14
+                spacing: 6
+
+                Text {
+                    text: "Virtual Machine"
+                    color: "#9297a3"
+                    font.pixelSize: 11
+                }
+
+                Text {
+                    text: "Windows Server 2025"
+                    color: "white"
+                    font.pixelSize: 14
+                    font.bold: true
+                }
+
+                Text {
+                    text: "4 CPU  •  16 GB RAM  •  120 GB Disk"
+                    color: "#aeb3bd"
+                    font.pixelSize: 12
+                }
+            }
+        }
+
+        ProgressBar {
+            id: progressBar
+
+            width: 460
+            height: 15
+
+            from: 0
+            to: 100
+            value: 0
+
+            background: Rectangle {
+                implicitWidth: 384
+                implicitHeight: 8
+
+                radius: 0
+                color: "#191b20"
+                border.color: "#343740"
+                border.width: 1
+            }
+
+            contentItem: Item {
+                Rectangle {
+                    width: progressBar.visualPosition * parent.width
+                    height: parent.height
+
+                    radius: 4
+                    color: "#1a2c7d"
+
+                    Behavior on width {
+                        NumberAnimation {
+                            duration: 200
+                            easing.type: Easing.OutCubic
+                        }
+                    }
+                }
+            }
+        }
+
+        Button {
+            width: parent.width
+            height: 46
+            text: "Start Migration"
+
+            background: Rectangle {
+                radius: 9
+                color: parent.down
+                       ? "#16245f"
+                       : "#1a2c7d"
+            }
+
+            contentItem: Text {
+                text: parent.text
+                color: "white"
+                font.pixelSize: 14
+                font.bold: true
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
+
+    }
+
+}
