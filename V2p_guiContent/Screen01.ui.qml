@@ -1,16 +1,11 @@
-
-
 /*
 This is a UI file (.ui.qml) that is intended to be edited in Qt Design Studio only.
-It is supposed to be strictly declarative and only uses a subset of QML. If you edit
-this file manually, you might introduce QML code that is not supported by Qt Design Studio.
-Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on .ui.qml files.
+It is supposed to be strictly declarative and only uses a subset of QML.
 */
+
 import QtQuick
 import QtQuick.Controls
 import V2p_gui
-import QtQuick.Studio.DesignEffects
-import QtQuick.Studio.Components 1.0
 
 Rectangle {
     width: 520
@@ -18,23 +13,33 @@ Rectangle {
     color: "#18191d"
 
     Column {
-        x: 68
-        y: 68
-        anchors.fill: parent
-        anchors.margins: 28
-        spacing: 20
-
-        Text {
-            text: "VMware to Proxmox"
-            color: "white"
-            font.pixelSize: 21
-            font.bold: true
+        anchors {
+            fill: parent
+            leftMargin: 32
+            rightMargin: 32
+            topMargin: 32
+            bottomMargin: 32
         }
 
-        Text {
-            text: "Simple Migratoin Tool"
-            color: "#9297a3"
-            font.pixelSize: 13
+        spacing: 18
+
+        // Header
+        Column {
+            width: parent.width
+            spacing: 4
+
+            Text {
+                text: "VMware to Proxmox"
+                color: "#ffffff"
+                font.pixelSize: 22
+                font.bold: true
+            }
+
+            Text {
+                text: "Simple Migration Tool"
+                color: "#9297a3"
+                font.pixelSize: 13
+            }
         }
 
         // Source
@@ -59,11 +64,15 @@ Rectangle {
                     height: 42
 
                     text: "Select Your VM Folder"
+
                     font.pointSize: 10
                     font.family: "Arial"
 
                     color: "#ffffff"
                     placeholderTextColor: "#666b76"
+
+                    horizontalAlignment: TextInput.AlignLeft
+                    verticalAlignment: TextInput.AlignVCenter
 
                     background: Rectangle {
                         radius: 8
@@ -79,6 +88,7 @@ Rectangle {
                 Button {
                     width: 74
                     height: 42
+
                     text: "Browse"
 
                     background: Rectangle {
@@ -87,12 +97,14 @@ Rectangle {
                                ? "#30343d"
                                : "#292c34"
                         border.color: "#3b3f49"
+                        border.width: 1
                     }
 
                     contentItem: Text {
                         text: parent.text
                         color: "#ffffff"
                         font.pixelSize: 12
+
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
@@ -117,11 +129,15 @@ Rectangle {
                 height: 42
 
                 text: "Proxmox Host (e.g. pve01.example.com)"
+
                 font.pointSize: 10
                 font.family: "Arial"
 
                 color: "#ffffff"
                 placeholderTextColor: "#666b76"
+
+                horizontalAlignment: TextInput.AlignLeft
+                verticalAlignment: TextInput.AlignVCenter
 
                 background: Rectangle {
                     radius: 8
@@ -139,6 +155,7 @@ Rectangle {
         Rectangle {
             width: parent.width
             height: 90
+
             radius: 10
             color: "#1c1e23"
 
@@ -155,7 +172,7 @@ Rectangle {
 
                 Text {
                     text: "Windows Server 2025"
-                    color: "white"
+                    color: "#ffffff"
                     font.pixelSize: 14
                     font.bold: true
                 }
@@ -168,10 +185,11 @@ Rectangle {
             }
         }
 
+        // Progress Bar
         ProgressBar {
             id: progressBar
 
-            width: 460
+            width: parent.width
             height: 15
 
             from: 0
@@ -179,10 +197,9 @@ Rectangle {
             value: 0
 
             background: Rectangle {
-                implicitWidth: 384
                 implicitHeight: 8
 
-                radius: 0
+                radius: 4
                 color: "#191b20"
                 border.color: "#343740"
                 border.width: 1
@@ -206,13 +223,20 @@ Rectangle {
             }
         }
 
+        // Start Migration
         Button {
             width: parent.width
             height: 46
+
             text: "Start Migration"
+
+            onClicked: {
+                backend.startMigration()
+            }
 
             background: Rectangle {
                 radius: 9
+
                 color: parent.down
                        ? "#16245f"
                        : "#1a2c7d"
@@ -220,14 +244,14 @@ Rectangle {
 
             contentItem: Text {
                 text: parent.text
-                color: "white"
+                color: "#ffffff"
+
                 font.pixelSize: 14
                 font.bold: true
+
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
         }
-
     }
-
 }
