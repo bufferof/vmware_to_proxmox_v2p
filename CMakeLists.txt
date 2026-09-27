@@ -21,6 +21,8 @@ qt_add_executable(V2p_gui
     main.cpp
     vmware/VmxParser.cpp
     vmware/VmxParser.h
+    utils/readFile.cpp
+    utils/utils.h
 )
 
 # QML 모듈

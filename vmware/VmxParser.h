@@ -2,6 +2,7 @@
 #define VMXPARSER_H
 
 #include <vector>
+#include <string>
 
 enum class FirmwareType
 {
@@ -88,5 +89,7 @@ struct VmConfig
     std::vector<DiskConfig> disks;
     std::vector<NetworkConfig> networks;
 };
+
+VmConfig make_vmconfig(std::string vmx_filepath);
 
 #endif
