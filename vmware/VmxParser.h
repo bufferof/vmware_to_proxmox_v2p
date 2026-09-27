@@ -1,6 +1,15 @@
 #ifndef VMXPARSER_H
 #define VMXPARSER_H
 
+#include <vector>
+
+enum class FirmwareType
+{
+    BIOS,
+    EFI,
+    UNKNOWN
+};
+
 struct CPUConfig
 {
     uint32_t numvcpus;
@@ -74,7 +83,7 @@ struct VmConfig
     std::string guestOS;
 
 
-    FirmwareType firmware;
+    FirmwareType firmware = FirmwareType::UNKNOWN;
 
     std::vector<DiskConfig> disks;
     std::vector<NetworkConfig> networks;
