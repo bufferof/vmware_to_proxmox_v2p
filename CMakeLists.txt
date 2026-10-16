@@ -7,6 +7,8 @@ project(V2p_gui
     LANGUAGES CXX
 )
 
+set(CMAKE_AUTOMOC ON)
+
 find_package(Qt6 REQUIRED COMPONENTS
     Core
     Gui
@@ -16,16 +18,16 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 qt_standard_project_setup()
 
-# 실행 파일 생성
 qt_add_executable(V2p_gui
     main.cpp
+    Backend.h
+    Backend.cpp
     vmware/VmxParser.cpp
     vmware/VmxParser.h
     utils/readFile.cpp
     utils/utils.h
 )
 
-# QML 모듈
 qt_add_qml_module(V2p_gui
     URI V2p_gui
     VERSION 1.0
@@ -34,7 +36,6 @@ qt_add_qml_module(V2p_gui
         Constants.qml
         EventListModel.qml
         EventListSimulator.qml
-
         V2p_guiContent/App.qml
         V2p_guiContent/Screen01.ui.qml
 )

@@ -1,23 +1,20 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QDebug>
+#include <QQmlContext>
 
-class Backend : public QObject
-{
-    Q_OBJECT
-
-public slots:
-    void startMigration()
-    {
-        qDebug() << "Migration started!";
-    }
-};
+#include "Backend.h"
 
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+
+    Backend backend;
+
+    engine.rootContext()->setContextProperty(
+        "backend", &backend
+    );
 
     engine.loadFromModule("V2p_gui", "App");
 
@@ -26,5 +23,3 @@ int main(int argc, char* argv[])
 
     return app.exec();
 }
-
-#include "main.moc"

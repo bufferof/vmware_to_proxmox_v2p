@@ -60,6 +60,7 @@ Rectangle {
                 spacing: 8
 
                 TextField {
+                    objectName: "vmFolderField"
                     width: parent.width - 82
                     height: 42
 
@@ -90,6 +91,10 @@ Rectangle {
                     height: 42
 
                     text: "Browse"
+
+                    onClicked: {
+                        backend.selectFile()
+                    }
 
                     background: Rectangle {
                         radius: 8

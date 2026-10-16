@@ -1,9 +1,14 @@
-#include <iostream>
 #include "VmxParser.h"
+#include "utils/utils.h"
 
-using namespace std;
+#include <iostream>
+#include <future>
 
-VmConfig make_vmconfig(std::string vmx_filepath)
+void make_vmconfig(std::string vmx_filepath)
 {
+	// GET File DATA
+	auto readingRawData = std::async(std::launch::async,readTxtFile,vmx_filepath);
+	std::string rawData = readingRawData.get();
 
+	std::cout << rawData[0];
 }

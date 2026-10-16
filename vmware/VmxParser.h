@@ -83,13 +83,19 @@ struct VmConfig
     std::string displayname;
     std::string guestOS;
 
-
     FirmwareType firmware = FirmwareType::UNKNOWN;
 
+    CPUConfig cpu{};
+    MemoryConfig memory{};
+    DisplayConfig display{};
+    UsbConfig usb{};
+
     std::vector<DiskConfig> disks;
+    std::vector<CDRomConfig> cdroms;
     std::vector<NetworkConfig> networks;
+    std::vector<PciBridgeConfig> pciBridges;
 };
 
-VmConfig make_vmconfig(std::string vmx_filepath);
+void make_vmconfig(std::string vmx_filepath);
 
 #endif
