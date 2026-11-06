@@ -64,7 +64,8 @@ Rectangle {
                     width: parent.width - 82
                     height: 42
 
-                    text: "Select Your VM Folder"
+                    text: backend.vmFolder
+                    placeholderText: "Select Your VM Folder"
 
                     font.pointSize: 10
                     font.family: "Arial"
