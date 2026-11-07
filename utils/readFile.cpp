@@ -5,6 +5,9 @@
 #include <windows.h>
 #include <iostream>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 std::wstring SelectFolder() {
     std::wstring path;
@@ -89,6 +92,20 @@ std::wstring SelectFile(
     }
 
     return path;
+}
+
+
+std::vector<std::wstring> findFiles(const std::wstring& folder, const std::wstring& extension)
+{
+    std::vector<std::wstring> files;
+
+    for (const auto& it : fs::directory_iterator(folder)) {
+        if (it.is_regular_file() && it.path().extension() == extension) {
+            files.push_back(it.path().wstring());
+        }
+    }
+
+    return files;
 }
 
 

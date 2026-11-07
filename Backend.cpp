@@ -30,6 +30,9 @@ void Backend::selectFile()
 
     m_vmFolder = selectedPath;
     emit vmFolderChanged();
+
+    auto targetFiles = findFiles(path.value(), L".vmx")[0]; //이거 임시로 찾은 것들 중 첫번째 파일만 처리하게 함. 나중에 여러 vmx 한번에 변환 해버리는 기능 추가할 때 수정
+
 }
 
 
