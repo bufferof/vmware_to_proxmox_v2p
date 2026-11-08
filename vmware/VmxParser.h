@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 enum class FirmwareType
 {
@@ -13,38 +14,30 @@ enum class FirmwareType
 
 struct CPUConfig
 {
-    uint32_t numvcpus;
-    uint32_t coresPerSocket;
-    uint32_t coresPerNode;
-    uint32_t numSMT;
-    bool hotadd;
+    uint32_t numvcpus = 1;
+    uint32_t coresPerSocket = 1;
+    bool hotadd = false;
 };
 
 struct MemoryConfig
 {
-    uint64_t memsize;
+    uint64_t memsize = 0;  // MB
 };
 
 struct DiskConfig
 {
     std::string controller;
     std::string device;
-    std::string deviceType;
     std::string fileName;
-    std::string mode;
-    std::string controllerType;
-    bool present;
+    bool present = false;
 };
 
 struct CDRomConfig
 {
     std::string controller;
     std::string device;
-    std::string deviceType;
     std::string fileName;
-    bool present;
-    bool startConnected;
-    bool autodetect;
+    bool present = false;
 };
 
 struct NetworkConfig
@@ -52,50 +45,24 @@ struct NetworkConfig
     std::string device;
     std::string virtualDev;
     std::string connectionType;
-    std::string addressType;
-    uint16_t pciSlotNumber;
-    bool present;
-};
-
-struct PciBridgeConfig
-{
-    std::string name;
-    std::string virtualDev;
-    uint32_t functions;
-    uint32_t pciSlotNumber;
-    bool present;
-};
-
-struct DisplayConfig
-{
-    uint64_t vramSize;
-    uint64_t graphicsMemoryKB;
-    bool guestBackedPrimaryAware;
-};
-
-struct UsbConfig
-{
-    bool present;
+    bool present = false;
 };
 
 struct VmConfig
 {
-    std::string displayname;
+    std::string displayName;
     std::string guestOS;
 
     FirmwareType firmware = FirmwareType::UNKNOWN;
 
     CPUConfig cpu{};
     MemoryConfig memory{};
-    DisplayConfig display{};
-    UsbConfig usb{};
 
     std::vector<DiskConfig> disks;
     std::vector<CDRomConfig> cdroms;
     std::vector<NetworkConfig> networks;
-    std::vector<PciBridgeConfig> pciBridges;
 };
 
-void make_vmconfig(std::string vmx_filepath);
+VmConfig make_vmconfig(std::unordered_map<std::string, std::string> vmxHashed);
 
 #endif

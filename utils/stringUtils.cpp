@@ -1,11 +1,9 @@
 #include "utils.h"
 
 #include <Windows.h>
-#include <unordered_map>
 #include <string_view>
-#include <ranges>
 
-std::vector<std::string_view> Split(
+static std::vector<std::string_view> Split(
     std::string_view str,
     std::string_view delimiter
 ) {

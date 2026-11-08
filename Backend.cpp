@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <optional>
 #include <utils/utils.h>
+#include <vmware/VmxParser.h>
 
 
 
@@ -48,6 +49,7 @@ void Backend::selectFile()
 
     std::unordered_map<std::string, std::string> vmxInformations = makeXmlToHashMap(vmxFileContent);
 
+    VmConfig vmConfigStructed = make_vmconfig(vmxInformations);
 }
 
 

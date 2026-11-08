@@ -8,6 +8,7 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include <unordered_map>
 
 std::wstring SelectFolder();
 std::string WStringToString(const std::wstring& wstr);
