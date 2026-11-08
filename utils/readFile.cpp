@@ -1,11 +1,10 @@
 #include "utils.h"
 
 #include <fstream>
-#include <sstream>
 #include <windows.h>
-#include <iostream>
 #include <string>
 #include <filesystem>
+#include <iterator>
 
 namespace fs = std::filesystem;
 
@@ -108,15 +107,13 @@ std::vector<std::wstring> findFiles(const std::wstring& folder, const std::wstri
     return files;
 }
 
-
-std::string readTxtFile(const std::string& path)
+std::string readFile(std::wstring filePath)
 {
-	std::ifstream file(path);
-	if (!file.is_open()) return "";
+    std::ifstream file(filePath, std::ios::binary);
+    if (!file.is_open()) return "";
 
-	std::stringstream buffer;
-	buffer << file.rdbuf();
-
-	return buffer.str();
+    return std::string (
+        (std::istreambuf_iterator<char>(file)),
+        std::istreambuf_iterator<char>()
+    );
 }
-

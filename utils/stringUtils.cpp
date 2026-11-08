@@ -1,7 +1,31 @@
 #include "utils.h"
 
 #include <Windows.h>
-#include <string>
+#include <unordered_map>
+#include <string_view>
+#include <ranges>
+
+std::vector<std::string_view> Split(
+    std::string_view str,
+    std::string_view delimiter
+) {
+    std::vector<std::string_view> result;
+
+    if (delimiter.empty())
+        return { str };
+
+    size_t start = 0;
+    size_t end;
+
+    while ((end = str.find(delimiter, start)) != std::string_view::npos) {
+        result.emplace_back(str.substr(start, end - start));
+        start = end + delimiter.size();
+    }
+
+    result.emplace_back(str.substr(start));
+
+    return result;
+}
 
 std::string WStringToString(const std::wstring& wstr)
 {
@@ -26,4 +50,20 @@ std::string WStringToString(const std::wstring& wstr)
     );
 
     return result;
+}
+
+std::unordered_map<std::string, std::string> makeXmlToHashMap(std::string fileContent)
+{
+    std::unordered_map<std::string, std::string> convertedResult;
+
+    std::istringstream stream(fileContent);
+    std::string line;
+
+    while (std::getline(stream, line))
+    {
+        auto splittedText = Split(line, " = ");
+        convertedResult.emplace(splittedText[0], splittedText[1]);
+    }
+
+    return convertedResult;
 }
