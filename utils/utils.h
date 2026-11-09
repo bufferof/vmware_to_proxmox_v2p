@@ -16,5 +16,7 @@ std::wstring SelectFile(std::initializer_list<COMDLG_FILTERSPEC> filters);
 std::vector<std::wstring> findFiles(const std::wstring& folder, const std::wstring& extension);
 std::string readFile(std::wstring filePath);
 std::unordered_map<std::string, std::string> makeXmlToHashMap(std::string fileContent);
+template<typename T>
+static T convertStringToInteger(const std::string& target);
 
 #endif

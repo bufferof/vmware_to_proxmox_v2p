@@ -2,6 +2,10 @@
 
 #include <Windows.h>
 #include <string_view>
+#include <charconv>
+#include <cstdint>
+#include <stdexcept>
+#include <system_error>
 
 static std::vector<std::string_view> Split(
     std::string_view str,
@@ -60,8 +64,34 @@ std::unordered_map<std::string, std::string> makeXmlToHashMap(std::string fileCo
     while (std::getline(stream, line))
     {
         auto splittedText = Split(line, " = ");
-        convertedResult.emplace(splittedText[0], splittedText[1]);
+
+        std::string value(splittedText[1]);
+        value.erase(
+            std::remove(value.begin(), value.end(), '"'),
+            value.end()
+        );
+
+        convertedResult.emplace(splittedText[0], value);
     }
 
     return convertedResult;
+}
+
+
+template<typename T>
+static T convertStringToInteger(const std::string& target)
+{
+    T value = 0;
+
+    auto [ptr, ec] = std::from_chars(
+        target.data(),
+        target.data() + target.size(),
+        value
+    );
+
+    if (ec != std::errc{} || ptr != target.data() + target.size()) {
+        throw std::invalid_argument("Invalid integer value");
+    }
+
+    return value;
 }
