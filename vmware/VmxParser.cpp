@@ -38,7 +38,8 @@ VmConfig make_vmconfig(std::unordered_map<std::string, std::string> vmxHashed)
     // Memory Informations
     config.memory.memsize = convertStringToInteger<uint64_t>(vmxHashed["memsize"]);
 
-
+    // Disk Informations
+    
 
 	return config;
 }
