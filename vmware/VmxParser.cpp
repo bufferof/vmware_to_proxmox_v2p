@@ -21,6 +21,22 @@ static FirmwareType ParseFirmware(
     return FirmwareType::UNKNOWN;
 }
 
+static std::vector<std::string> FindDisks(
+    const std::unordered_map<std::string, std::string>& vmx
+) {
+    std::vector<std::string> disks;
+
+    for (const auto& [key, value] : vmx) {
+        if ( EndsWith(key,".fileName") &&
+          (StartsWith(key,"scsi") || StartsWith(key,"sata") || StartsWith(key,"nvme") || StartsWith(key,"ide")) &&
+           EndsWith(key,".vmdk")) {
+            disks.push_back(value);
+        }
+    }
+
+    return disks;
+}
+
 VmConfig make_vmconfig(std::unordered_map<std::string, std::string> vmxHashed)
 {
 	VmConfig config;
@@ -39,7 +55,9 @@ VmConfig make_vmconfig(std::unordered_map<std::string, std::string> vmxHashed)
     config.memory.memsize = convertStringToInteger<uint64_t>(vmxHashed["memsize"]);
 
     // Disk Informations
-    
+    std::vector<std::string> disks = FindDisks(vmxHashed);
+
+
 
 	return config;
 }

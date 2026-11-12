@@ -2,7 +2,6 @@
 
 #include <Windows.h>
 #include <string_view>
-#include <charconv>
 #include <cstdint>
 #include <stdexcept>
 #include <system_error>
@@ -78,20 +77,13 @@ std::unordered_map<std::string, std::string> makeXmlToHashMap(std::string fileCo
 }
 
 
-template<typename T>
-static T convertStringToInteger(const std::string& target)
-{
-    T value = 0;
+static bool EndsWith(const std::string& str, const std::string& suffix) {
+    return str.size() >= suffix.size() &&
+        str.compare(str.size() - suffix.size(),
+            suffix.size(), suffix) == 0;
+}
 
-    auto [ptr, ec] = std::from_chars(
-        target.data(),
-        target.data() + target.size(),
-        value
-    );
-
-    if (ec != std::errc{} || ptr != target.data() + target.size()) {
-        throw std::invalid_argument("Invalid integer value");
-    }
-
-    return value;
+static bool StartsWith(const std::string& str, const std::string& prefix) {
+    return str.size() >= prefix.size() &&
+        str.compare(0, prefix.size(), prefix) == 0;
 }

@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
+#include <charconv>
 
 std::wstring SelectFolder();
 std::string WStringToString(const std::wstring& wstr);
@@ -16,7 +17,24 @@ std::wstring SelectFile(std::initializer_list<COMDLG_FILTERSPEC> filters);
 std::vector<std::wstring> findFiles(const std::wstring& folder, const std::wstring& extension);
 std::string readFile(std::wstring filePath);
 std::unordered_map<std::string, std::string> makeXmlToHashMap(std::string fileContent);
-template<typename T>
-static T convertStringToInteger(const std::string& target);
+static bool EndsWith(const std::string& str, const std::string& suffix);
+static bool StartsWith(const std::string& str, const std::string& prefix);
 
+template<typename T>
+static T convertStringToInteger(const std::string& target)
+{
+    T value = 0;
+
+    auto [ptr, ec] = std::from_chars(
+        target.data(),
+        target.data() + target.size(),
+        value
+    );
+
+    if (ec != std::errc{} || ptr != target.data() + target.size()) {
+        throw std::invalid_argument("Invalid integer value");
+    }
+
+    return value;
+}
 #endif
