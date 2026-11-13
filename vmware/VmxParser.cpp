@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <future>
+#include <utility>
 
 static FirmwareType ParseFirmware(
     const std::unordered_map<std::string, std::string>& config
@@ -21,16 +22,16 @@ static FirmwareType ParseFirmware(
     return FirmwareType::UNKNOWN;
 }
 
-static std::vector<std::string> FindDisks(
+static std::vector<std::pair<std::string, std::string>> FindDisks(
     const std::unordered_map<std::string, std::string>& vmx
 ) {
-    std::vector<std::string> disks;
+    std::vector<std::pair<std::string,std::string>> disks;
 
     for (const auto& [key, value] : vmx) {
         if ( EndsWith(key,".fileName") &&
           (StartsWith(key,"scsi") || StartsWith(key,"sata") || StartsWith(key,"nvme") || StartsWith(key,"ide")) &&
            EndsWith(key,".vmdk")) {
-            disks.push_back(value);
+            disks.push_back(std::make_pair(removeAll(key, ".fileName"), value));
         }
     }
 
@@ -55,7 +56,20 @@ VmConfig make_vmconfig(std::unordered_map<std::string, std::string> vmxHashed)
     config.memory.memsize = convertStringToInteger<uint64_t>(vmxHashed["memsize"]);
 
     // Disk Informations
-    std::vector<std::string> disks = FindDisks(vmxHashed);
+    std::vector<std::pair<std::string, std::string>> disks = FindDisks(vmxHashed);
+
+    for (auto &it : disks) {
+        DiskConfig disk;
+        disk.controller = Split(it.first, ":")[0];
+        disk.device = vmxHashed[it.first + ".deviceType"];
+        disk.fileName = it.second;
+        if (vmxHashed[it.first + ".present"] == "TRUE") {
+            disk.present = true;
+        }
+
+        config.disks.push_back(disk);
+    }
+
 
 
 

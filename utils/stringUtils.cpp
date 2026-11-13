@@ -87,3 +87,14 @@ static bool StartsWith(const std::string& str, const std::string& prefix) {
     return str.size() >= prefix.size() &&
         str.compare(0, prefix.size(), prefix) == 0;
 }
+
+std::string removeAll(std::string str, const std::string& target) {
+    if (target.empty()) return str;
+
+    size_t pos = 0;
+    while ((pos = str.find(target, pos)) != std::string::npos) {
+        str.erase(pos, target.length());
+    }
+
+    return str;
+}

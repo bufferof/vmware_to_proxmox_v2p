@@ -19,6 +19,11 @@ std::string readFile(std::wstring filePath);
 std::unordered_map<std::string, std::string> makeXmlToHashMap(std::string fileContent);
 static bool EndsWith(const std::string& str, const std::string& suffix);
 static bool StartsWith(const std::string& str, const std::string& prefix);
+std::string removeAll(std::string str, const std::string& target);
+static std::vector<std::string_view> Split(
+    std::string_view str,
+    std::string_view delimiter
+);
 
 template<typename T>
 static T convertStringToInteger(const std::string& target)
