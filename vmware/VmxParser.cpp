@@ -22,20 +22,26 @@ static FirmwareType ParseFirmware(
     return FirmwareType::UNKNOWN;
 }
 
-static std::vector<std::pair<std::string, std::string>> FindDisks(
+static std::pair<std::vector<std::pair<std::string, std::string>>, std::vector<std::pair<std::string, std::string>>>  FindDisks(
     const std::unordered_map<std::string, std::string>& vmx
 ) {
     std::vector<std::pair<std::string,std::string>> disks;
+    std::vector<std::pair<std::string, std::string>> cdROMs;
 
     for (const auto& [key, value] : vmx) {
         if ( EndsWith(key,".fileName") &&
-          (StartsWith(key,"scsi") || StartsWith(key,"sata") || StartsWith(key,"nvme") || StartsWith(key,"ide")) &&
-           EndsWith(key,".vmdk")) {
-            disks.push_back(std::make_pair(removeAll(key, ".fileName"), value));
+          (StartsWith(key,"scsi") || StartsWith(key,"sata") || StartsWith(key,"nvme") || StartsWith(key,"ide"))) {
+            if (EndsWith(key, ".vmdk")) {
+                disks.push_back(std::make_pair(removeAll(key, ".fileName"), value));
+            }
+            else if (EndsWith(key, ".iso")) {
+                cdROMs.push_back(std::make_pair(removeAll(key, ".fileName"), value));
+            }
+            
         }
     }
 
-    return disks;
+    return {disks, cdROMs};
 }
 
 VmConfig make_vmconfig(std::unordered_map<std::string, std::string> vmxHashed)
@@ -55,14 +61,15 @@ VmConfig make_vmconfig(std::unordered_map<std::string, std::string> vmxHashed)
     // Memory Informations
     config.memory.memsize = convertStringToInteger<uint64_t>(vmxHashed["memsize"]);
 
-    // Disk Informations
-    std::vector<std::pair<std::string, std::string>> disks = FindDisks(vmxHashed);
+    // Disk Informations && CDRom Informations 
+    auto [disks,cdroms] = FindDisks(vmxHashed);
 
     for (auto &it : disks) {
         DiskConfig disk;
         disk.controller = Split(it.first, ":")[0];
         disk.device = vmxHashed[it.first + ".deviceType"];
         disk.fileName = it.second;
+
         if (vmxHashed[it.first + ".present"] == "TRUE") {
             disk.present = true;
         }
@@ -70,6 +77,18 @@ VmConfig make_vmconfig(std::unordered_map<std::string, std::string> vmxHashed)
         config.disks.push_back(disk);
     }
 
+    for (auto& it : cdroms) {
+        CDRomConfig cdrom;
+        cdrom.controller = Split(it.first, ":")[0];
+        cdrom.device = vmxHashed[it.first + ".deviceType"];
+        cdrom.fileName = it.second;
+
+        if (vmxHashed[it.first + ".present"] == "TRUE") {
+            cdrom.present = true;
+        }
+
+        config.cdroms.push_back(cdrom);
+    }
 
 
 
