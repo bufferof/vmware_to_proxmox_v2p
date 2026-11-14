@@ -4,6 +4,10 @@
 #include <iostream>
 #include <future>
 #include <utility>
+#include <regex>
+
+std::regex pattern(R"(^ethernet([0-9]+)\.present$)"); // 이더넷 찾을 때 쓰는 regex
+
 
 static FirmwareType ParseFirmware(
     const std::unordered_map<std::string, std::string>& config
@@ -23,12 +27,12 @@ static FirmwareType ParseFirmware(
 }
 
 static std::pair<std::vector<std::pair<std::string, std::string>>, std::vector<std::pair<std::string, std::string>>>  FindDisks(
-    const std::unordered_map<std::string, std::string>& vmx
+    const std::unordered_map<std::string, std::string>& config
 ) {
     std::vector<std::pair<std::string,std::string>> disks;
     std::vector<std::pair<std::string, std::string>> cdROMs;
 
-    for (const auto& [key, value] : vmx) {
+    for (const auto& [key, value] : config) {
         if ( EndsWith(key,".fileName") &&
           (StartsWith(key,"scsi") || StartsWith(key,"sata") || StartsWith(key,"nvme") || StartsWith(key,"ide"))) {
             if (EndsWith(key, ".vmdk")) {
@@ -42,6 +46,21 @@ static std::pair<std::vector<std::pair<std::string, std::string>>, std::vector<s
     }
 
     return {disks, cdROMs};
+}
+
+static std::vector<std::string> FindNetworkInterfaces(
+  const std::unordered_map<std::string, std::string> &config  
+) {
+    std::vector<std::string> ethernets;
+
+    for (const auto& [key, value] : config) {
+        std::smatch match;
+        if (std::regex_match(key, match, pattern)) {
+            ethernets.push_back(std::string(Split(key, ".")[0]));
+        }
+    }
+
+    return ethernets;
 }
 
 VmConfig make_vmconfig(std::unordered_map<std::string, std::string> vmxHashed)
@@ -90,7 +109,21 @@ VmConfig make_vmconfig(std::unordered_map<std::string, std::string> vmxHashed)
         config.cdroms.push_back(cdrom);
     }
 
+    // Network Interface Informations
+    std::vector<std::string> ethernets = FindNetworkInterfaces(vmxHashed);
 
+    for (auto& it : ethernets) {
+        NetworkConfig network;
+        network.device = it;
+        network.virtualDev = vmxHashed[it + ".virtualDev"];
+        network.connectionType = vmxHashed[it + ".connectionType"];
+        
+        if (vmxHashed[it + ".present"] == "TRUE") {
+            network.present = true;
+        }
+
+        config.networks.push_back(network);
+    }
 
 	return config;
 }
