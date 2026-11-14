@@ -182,8 +182,8 @@ Rectangle {
                 Column {
                     anchors.fill: parent; anchors.margins: 13; spacing: 7
                     Text { text: "VM PREVIEW"; color: root.muted; font.pixelSize: 10; font.bold: true; font.letterSpacing: 1.2 }
-                    Text { text: "Windows Server 2025"; color: "#f7f8fa"; font.pixelSize: 15; font.bold: true }
-                    Text { text: "4 vCPU     •     16 GB RAM     •     120 GB disk"; color: "#abb3c2"; font.pixelSize: 12 }
+                    Text { text: backend.displayName; color: "#f7f8fa"; font.pixelSize: 15; font.bold: true }
+                    Text { text: backend.vmSpec; color: "#abb3c2"; font.pixelSize: 12 }
                 }
             }
 

@@ -33,15 +33,28 @@ static std::pair<std::vector<std::pair<std::string, std::string>>, std::vector<s
     std::vector<std::pair<std::string, std::string>> cdROMs;
 
     for (const auto& [key, value] : config) {
-        if ( EndsWith(key,".fileName") &&
-          (StartsWith(key,"scsi") || StartsWith(key,"sata") || StartsWith(key,"nvme") || StartsWith(key,"ide"))) {
-            if (EndsWith(key, ".vmdk")) {
-                disks.push_back(std::make_pair(removeAll(key, ".fileName"), value));
+        if (EndsWith(key, ".fileName") &&
+            (StartsWith(key, "scsi") ||
+                StartsWith(key, "sata") ||
+                StartsWith(key, "nvme") ||
+                StartsWith(key, "ide")))
+        {
+            std::string filename = value;
+
+            // 끝의 개행 및 공백 제거
+            while (!filename.empty() &&
+                (filename.back() == '\r' ||
+                    filename.back() == '\n' ||
+                    filename.back() == ' ')) {
+                filename.pop_back();
             }
-            else if (EndsWith(key, ".iso")) {
-                cdROMs.push_back(std::make_pair(removeAll(key, ".fileName"), value));
+
+            if (EndsWith(filename, ".vmdk")) {
+                disks.emplace_back(removeAll(key, ".fileName"), filename);
             }
-            
+            else if (EndsWith(filename, ".iso")) {
+                cdROMs.emplace_back(removeAll(key, ".fileName"), filename);
+            }
         }
     }
 

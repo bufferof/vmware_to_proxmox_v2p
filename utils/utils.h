@@ -10,6 +10,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <charconv>
+#include <type_traits>
 
 std::wstring SelectFolder();
 std::string WStringToString(const std::wstring& wstr);
@@ -17,17 +18,32 @@ std::wstring SelectFile(std::initializer_list<COMDLG_FILTERSPEC> filters);
 std::vector<std::wstring> findFiles(const std::wstring& folder, const std::wstring& extension);
 std::string readFile(std::wstring filePath);
 std::unordered_map<std::string, std::string> makeXmlToHashMap(std::string fileContent);
-static bool EndsWith(const std::string& str, const std::string& suffix);
-static bool StartsWith(const std::string& str, const std::string& prefix);
+bool EndsWith(const std::string& str, const std::string& suffix);
+bool StartsWith(const std::string& str, const std::string& prefix);
 std::string removeAll(std::string str, const std::string& target);
-static std::vector<std::string_view> Split(
+std::vector<std::string_view> Split(
     std::string_view str,
     std::string_view delimiter
 );
 
+
 template<typename T>
-static T convertStringToInteger(const std::string& target)
+T convertStringToInteger(std::string_view target)
 {
+    static_assert(std::is_integral_v<T>, "T must be an integer type");
+
+    // 앞뒤 공백 및 개행 제거
+    constexpr std::string_view whitespace = " \t\r\n";
+
+    const auto first = target.find_first_not_of(whitespace);
+
+    if (first == std::string_view::npos)
+        throw std::invalid_argument("Empty integer value");
+
+    const auto last = target.find_last_not_of(whitespace);
+
+    target = target.substr(first, last - first + 1);
+
     T value = 0;
 
     auto [ptr, ec] = std::from_chars(
@@ -36,9 +52,8 @@ static T convertStringToInteger(const std::string& target)
         value
     );
 
-    if (ec != std::errc{} || ptr != target.data() + target.size()) {
+    if (ec != std::errc{} || ptr != target.data() + target.size())
         throw std::invalid_argument("Invalid integer value");
-    }
 
     return value;
 }

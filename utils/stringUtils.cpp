@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <system_error>
 
-static std::vector<std::string_view> Split(
+std::vector<std::string_view> Split(
     std::string_view str,
     std::string_view delimiter
 ) {
@@ -77,13 +77,13 @@ std::unordered_map<std::string, std::string> makeXmlToHashMap(std::string fileCo
 }
 
 
-static bool EndsWith(const std::string& str, const std::string& suffix) {
+bool EndsWith(const std::string& str, const std::string& suffix) {
     return str.size() >= suffix.size() &&
         str.compare(str.size() - suffix.size(),
             suffix.size(), suffix) == 0;
 }
 
-static bool StartsWith(const std::string& str, const std::string& prefix) {
+bool StartsWith(const std::string& str, const std::string& prefix) {
     return str.size() >= prefix.size() &&
         str.compare(0, prefix.size(), prefix) == 0;
 }
